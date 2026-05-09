@@ -86,7 +86,7 @@
         @elseif($peminjaman->status == 'disetujui')
             <div style="margin-top: 20px; padding: 15px; border: 1px solid #27ae60; border-radius: 5px; background-color: #e9f7ef;">
                 <h4 style="margin-top: 0;">Selesaikan Peminjaman & Kembalikan Barang</h4>
-                <form action="{{ route('peminjaman.kembalikan', $peminjaman->id) }}" method="POST">
+                <form action="{{ route('peminjaman.kembali', $peminjaman->id) }}" method="POST">
                     @csrf
                     <div style="margin-bottom: 10px;">
                         <label for="waktu_kembali_aktual"><strong>Waktu Dikembalikan:</strong></label>
