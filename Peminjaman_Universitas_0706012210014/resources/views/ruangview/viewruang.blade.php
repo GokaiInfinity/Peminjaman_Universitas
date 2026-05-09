@@ -12,6 +12,7 @@
             <td><button><a href="/ruang">Lihat Ruang</a></button></td>
             <td><button><a href="/peralatan">Lihat Peralatan</a></button></td>
             <td><button><a href="/peminjam">Lihat Peminjam</a></button></td>
+            <td><button><a href="/peminjaman">Form Peminjaman</a></button></td>
         </tr>
     </table>
     <a href="/addruang">Tambah Ruang</a>
@@ -19,6 +20,7 @@
     <table border="1">
         <tr>
             <th>ID</th>
+            <th>Nama Ruang</th>
             <th>Kapasitas</th>
             <th>Gedung</th>
             <th>Lantai</th>
@@ -28,10 +30,11 @@
         @foreach ($ruang as $r)
         <tr>
             <td>{{ $r->id }}</td>
+            <td>{{ $r->nama_ruang }}</td>
             <td>{{ $r->kapasitas }}</td>
             <td>{{ $r->gedung }}</td>
             <td>{{ $r->lantai }}</td>
-            <td>{{ $r->status_ketersediaan }}</td>
+            <td>{{ $r->status_ketersediaan == '1' ? 'Tersedia' : 'Tidak Tersedia' }}</td>
             <td>
                 <button><a href="/editruang/{{ $r->id }}">Edit</a></button>
                 <button><a href="/deleteruang/{{ $r->id }}"> Hapus Ruang</a></button>

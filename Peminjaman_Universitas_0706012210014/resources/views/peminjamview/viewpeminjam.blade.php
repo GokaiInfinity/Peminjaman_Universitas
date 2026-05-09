@@ -9,8 +9,10 @@
 <body>
     <table>
         <tr>
+            <td><button><a href="/ruang">Lihat Ruang</a></button></td>
             <td><button><a href="/peralatan">Lihat Peralatan</a></button></td>
             <td><button><a href="/peminjam">Lihat Peminjam</a></button></td>
+            <td><button><a href="/peminjaman">Form Peminjaman</a></button></td>
         </tr>
     </table>
     <a href="/addpeminjam">Tambah Peminjam</a>

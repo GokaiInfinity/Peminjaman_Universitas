@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ruang extends Model
 {
     protected $fillable = [
+        'nama_ruang',
         'kapasitas',
         'gedung',
         'lantai',

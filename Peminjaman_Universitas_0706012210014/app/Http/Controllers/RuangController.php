@@ -29,6 +29,7 @@ class RuangController extends Controller
     {
         // Membuat entri ruang baru di database
         ruang::create([
+            'nama_ruang' => $request->nama_ruang,
             'kapasitas' => $request->kapasitas,
             'gedung' => $request->gedung,
             'lantai' => $request->lantai,
@@ -64,6 +65,7 @@ class RuangController extends Controller
         $ruang = ruang::find($ruang_id);
         // Memperbarui data ruang dengan data baru dari request
         $ruang->update([
+            'nama_ruang' => $request->nama_ruang,
             'kapasitas' => $request->kapasitas,
             'gedung' => $request->gedung,
             'lantai' => $request->lantai,

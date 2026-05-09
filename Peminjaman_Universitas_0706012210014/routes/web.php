@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PeminjamController;
 use App\Http\Controllers\PeralatanController;
 use App\Http\Controllers\RuangController;
@@ -40,3 +41,8 @@ Route::get('/editruang/{ruang_id}', [RuangController::class, 'editruangview']);
 Route::post('/updateruang/{ruang_id}', [RuangController::class, 'updateruang']);
 
 Route::get('/deleteruang/{ruang_id}', [RuangController::class, 'deleteRuang']);
+
+// Peminjaman
+Route::get('/peminjaman', [PeminjamanController::class, 'create']);
+
+Route::post('/peminjaman/store', [PeminjamanController::class, 'store'])->name('peminjaman.store');
