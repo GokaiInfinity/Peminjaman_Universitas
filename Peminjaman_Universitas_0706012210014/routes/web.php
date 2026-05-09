@@ -61,4 +61,5 @@ Route::post('/peminjaman/tolak/{peminjaman_id}', [PeminjamanController::class, '
 // Pengembalian
 Route::post('/peminjaman/kembalikan/{peminjaman_id}', [PeminjamanController::class, 'kembalikan'])->name('peminjaman.kembali');
 
-
+Route::get('/peminjaman/export/excel', [PeminjamanController::class, 'exportExcel'])->name('peminjaman.excel');
+Route::get('/peminjaman/export/pdf', [PeminjamanController::class, 'exportPdf'])->name('peminjaman.pdf');

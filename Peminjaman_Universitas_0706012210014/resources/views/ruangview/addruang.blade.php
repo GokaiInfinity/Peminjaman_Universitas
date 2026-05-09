@@ -7,6 +7,7 @@
     <title>Tambah Ruang</title>
 </head>
 <body>
+    {{-- Tambah Ruang --}}
     <h1>Tambah Ruang</h1>
     <form action="/insertruang" method="POST">
         @csrf

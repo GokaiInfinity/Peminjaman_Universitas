@@ -7,6 +7,7 @@
     <title>Document</title>
 </head>
 <body>
+    {{-- Edit Peralatan --}}
     <h1>Edit Peralatan</h1>
     <form action="/updateperalatan/{{ $peralatan->id }}" method="POST">
         @csrf

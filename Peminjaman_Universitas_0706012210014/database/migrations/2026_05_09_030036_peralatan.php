@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('kode_peralatan')->unique();
             $table->string('nama_peralatan');
-            $table->string('stok');
+            $table->integer('stok')->unsigned();
             $table->string('kategori');
             $table->timestamps();
         });

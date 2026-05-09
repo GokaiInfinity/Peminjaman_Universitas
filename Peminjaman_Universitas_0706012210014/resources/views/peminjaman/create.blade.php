@@ -17,7 +17,7 @@
         </tr>
     </table>
 
-    <!-- resources/views/peminjaman/create.blade.php -->
+    {{-- Memeriksa adanya error saat submit --}}
 @if ($errors->any())
     <div class="alert alert-danger">
         <ul>
@@ -27,7 +27,7 @@
         </ul>
     </div>
 @endif
-
+{{-- Form Peminjaman --}}
 <form action="/peminjaman/store" method="POST">
     @csrf
     {{--Informasi Dasar --}}

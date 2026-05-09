@@ -7,6 +7,11 @@
     <title>View Peminjaman</title>
 </head>
 <body>
+
+    <div class="mb-3">
+        <a href="{{ route('peminjaman.excel') }}" class="btn btn-success">Ekspor Excel</a>
+        <a href="{{ route('peminjaman.pdf') }}" class="btn btn-danger">Ekspor PDF</a>
+    </div>
     <div class="container">
     <h2>Daftar Peminjaman Ruang & Peralatan</h2>
 

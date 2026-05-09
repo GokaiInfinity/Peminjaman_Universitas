@@ -7,6 +7,7 @@
     <title>Document</title>
 </head>
 <body>
+    {{-- Navigasi --}}
     <table>
         <tr>
             <td><button><a href="/ruang">Lihat Ruang</a></button></td>
@@ -16,7 +17,9 @@
             <td><button><a href="/peminjaman/viewpeminjaman">View Peminjaman</a></button></td>
         </tr>
     </table>
+    {{-- Tambah Peminjam --}}
     <a href="/addpeminjam">Tambah Peminjam</a>
+    {{-- Daftar Peminjam --}}
     <h1>Daftar Peminjam</h1>
     <table border="1">
         <tr>

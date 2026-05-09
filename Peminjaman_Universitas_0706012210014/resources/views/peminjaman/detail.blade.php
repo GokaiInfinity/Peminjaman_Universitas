@@ -24,6 +24,7 @@
 </head>
 <body>
 
+{{-- Detail Peminjaman --}}
 <div class="container">
     <div class="header">
         <h2>Detail Peminjaman #{{ $peminjaman->id }}</h2>
@@ -68,10 +69,10 @@
             </tbody>
         </table>
     </div>
-
+{{-- Tombol Aksi --}}
     <div class="action-btns">
         <a href="{{ route('peminjaman.index') }}" class="btn btn-back">Kembali ke Daftar</a>
-
+        {{-- Tombol untuk menyetujui atau menolak peminjaman --}}
         @if($peminjaman->status == 'menunggu')
             <form action="{{ route('peminjaman.terima', $peminjaman->id) }}" method="POST" style="display:inline;">
                 @csrf
@@ -82,7 +83,7 @@
                 @csrf
                 <button type="submit" class="btn btn-reject" onclick="return confirm('Tolak peminjaman ini?')">Tolak Peminjaman</button>
             </form>
-
+{{-- Muncul Menu Tanggal Pengembalian saat peminjaman disetujui --}}
         @elseif($peminjaman->status == 'disetujui')
             <div style="margin-top: 20px; padding: 15px; border: 1px solid #27ae60; border-radius: 5px; background-color: #e9f7ef;">
                 <h4 style="margin-top: 0;">Selesaikan Peminjaman & Kembalikan Barang</h4>

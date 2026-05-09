@@ -9,8 +9,11 @@ use App\Models\Peralatan;
 use App\Models\Peminjam;
 use App\Models\Peminjaman;
 use App\Http\Requests\StorePeminjamanRequest;
+use App\Exports\PeminjamanExport;
+use Maatwebsite\Excel\Facades\Excel;
 // Jika Anda menggunakan transaksi DB atau Carbon untuk waktu:
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 
 class PeminjamanController extends Controller
@@ -26,50 +29,51 @@ class PeminjamanController extends Controller
 
 
     public function store(StorePeminjamanRequest $request)
-{
-    try {
-        DB::beginTransaction();
+    {
+        try {
+            DB::beginTransaction();
 
-        // 1. Ambil data yang sudah divalidasi
-        $data = $request->validated();
+            // 1. Ambil data yang sudah divalidasi
+            $data = $request->validated();
 
-        // 2. Tambahkan data otomatis yang tidak diinput user lewat form
-        $data['tgl_pengajuan'] = now(); // Mengisi tgl_pengajuan dengan waktu sekarang
-        $data['status'] = 'menunggu';   // Default status awal
+            // 2. Tambahkan data otomatis yang tidak diinput user lewat form
+            $data['tgl_pengajuan'] = now(); // Mengisi tgl_pengajuan dengan waktu sekarang
+            $data['status'] = 'menunggu';   // Default status awal
 
-        // 3. Masukkan ke tabel peminjaman
-        $peminjaman = Peminjaman::create($data);
+            // 3. Masukkan ke tabel peminjaman
+            $peminjaman = Peminjaman::create($data);
 
-        // 4. Proses Peralatan jika ada
-        if ($request->has('peralatan_id')) {
-            foreach ($request->peralatan_id as $index => $alatId) {
-                if (!$alatId) continue;
+            // 4. Proses Peralatan jika ada
+            if ($request->has('peralatan_id')) {
+                foreach ($request->peralatan_id as $index => $alatId) {
+                    if (!$alatId) continue;
 
-                $jumlah = $request->jumlah_pinjam[$index];
+                    $jumlah = $request->jumlah_pinjam[$index];
 
-                // Cari alat dan cek stok
-                $alat = Peralatan::findOrFail($alatId);
+                    // Cari alat dan cek stok
+                    $alat = Peralatan::findOrFail($alatId);
+                    echo "Alat: {$alat->nama_peralatan}, Stok: {$alat->stok}, Jumlah Pinjam: {$jumlah}"; // Debug
 
-                if ($alat->stok < $jumlah) {
-                    throw new \Exception("Stok alat {$alat->nama_alat} tidak mencukupi.");
+                    if ($alat->stok < $jumlah) {
+                        throw new \Exception("Stok alat {$alat->nama_peralatan} tidak mencukupi.");
+                    }
+
+                    // Simpan ke tabel pivot (detail_peralatans)
+                    $peminjaman->peralatans()->attach($alatId, [
+                        'jumlah_pinjam' => $jumlah
+                    ]);
                 }
-
-                // Simpan ke tabel pivot (detail_peralatans)
-                $peminjaman->peralatans()->attach($alatId, [
-                    'jumlah_pinjam' => $jumlah
-                ]);
             }
+
+            DB::commit();
+            return redirect('/peminjaman')->with('success', 'Peminjaman berhasil diajukan!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // Mengembalikan pesan error spesifik jika stok tidak cukup atau ada masalah DB
+            return back()->withErrors(['error' => $e->getMessage()])->withInput();
         }
-
-        DB::commit();
-        return redirect('/peminjaman')->with('success', 'Peminjaman berhasil diajukan!');
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        // Mengembalikan pesan error spesifik jika stok tidak cukup atau ada masalah DB
-        return back()->withErrors(['error' => $e->getMessage()])->withInput();
     }
-}
     public function index()
     {
         // Menggunakan eager loading (with) untuk mencegah N+1 problem
@@ -127,7 +131,7 @@ class PeminjamanController extends Controller
                 $jumlahPinjam = $alat->pivot->jumlah_pinjam;
 
                 if ($alat->stok < $jumlahPinjam) {
-                    throw new \Exception("Stok alat {$alat->nama_alat} tidak cukup untuk disetujui.");
+                    throw new \Exception("Stok alat {$alat->nama_peralatan} tidak cukup untuk disetujui.");
                 }
 
                 // Kurangi stok barang
@@ -155,39 +159,52 @@ class PeminjamanController extends Controller
     }
 
     public function kembalikan(Request $request, $id)
-{
-    // Validasi input waktu
-    $request->validate([
-        'waktu_kembali_aktual' => 'required|date'
-    ]);
-
-    try {
-        DB::beginTransaction();
-
-        $peminjaman = Peminjaman::with('peralatans')->findOrFail($id);
-
-        if ($peminjaman->status !== 'disetujui') {
-            throw new \Exception("Hanya peminjaman dengan status 'disetujui' yang bisa dikembalikan.");
-        }
-
-        // 1. Lakukan Increment Stok (Kembalikan stok barang)
-        foreach ($peminjaman->peralatans as $alat) {
-            $jumlahPinjam = $alat->pivot->jumlah_pinjam;
-            $alat->increment('stok', $jumlahPinjam);
-        }
-
-        // 2. Update Status dan Waktu Kembali Aktual
-        $peminjaman->update([
-            'status' => 'selesai',
-            'waktu_kembali_aktual' => $request->waktu_kembali_aktual
+    {
+        // Validasi input waktu
+        $request->validate([
+            'waktu_kembali_aktual' => 'required|date'
         ]);
 
-        DB::commit();
-        return back()->with('success', 'Peminjaman telah selesai, waktu dicatat, dan stok barang dikembalikan.');
+        try {
+            DB::beginTransaction();
 
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return back()->withErrors(['error' => $e->getMessage()]);
+            $peminjaman = Peminjaman::with('peralatans')->findOrFail($id);
+
+            if ($peminjaman->status !== 'disetujui') {
+                throw new \Exception("Hanya peminjaman dengan status 'disetujui' yang bisa dikembalikan.");
+            }
+
+            // 1. Lakukan Increment Stok (Kembalikan stok barang)
+            foreach ($peminjaman->peralatans as $alat) {
+                $jumlahPinjam = $alat->pivot->jumlah_pinjam;
+                $alat->increment('stok', $jumlahPinjam);
+            }
+
+            // 2. Update Status dan Waktu Kembali Aktual
+            $peminjaman->update([
+                'status' => 'selesai',
+                'waktu_kembali_aktual' => $request->waktu_kembali_aktual
+            ]);
+
+            DB::commit();
+            return back()->with('success', 'Peminjaman telah selesai, waktu dicatat, dan stok barang dikembalikan.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
     }
-}
+    public function exportExcel()
+    {
+        return Excel::download(new PeminjamanExport, 'laporan-peminjaman.xlsx');
+    }
+    public function exportPdf()
+    {
+        $peminjaman = Peminjaman::with(['peminjam', 'ruang', 'peralatans'])->get();
+
+        // Memanggil view khusus cetak
+        $pdf = Pdf::loadView('peminjaman.pdf', compact('peminjaman'));
+
+        return $pdf->download('laporan-peminjaman.pdf');
+    }
 }

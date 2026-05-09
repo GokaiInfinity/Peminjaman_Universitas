@@ -7,6 +7,7 @@
     <title>Peralatan</title>
 </head>
 <body>
+    {{-- Tambah Peralatan --}}
     <h1>Tambah Peralatan</h1>
     <form action="/insertperalatan" method="POST">
         @csrf
