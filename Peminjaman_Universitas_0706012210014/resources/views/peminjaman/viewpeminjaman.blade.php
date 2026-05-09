@@ -14,7 +14,17 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <table class="table table-bordered">
+    <table>
+        <tr>
+            <td><button><a href="/ruang">Lihat Ruang</a></button></td>
+            <td><button><a href="/peralatan">Lihat Peralatan</a></button></td>
+            <td><button><a href="/peminjam">Lihat Peminjam</a></button></td>
+            <td><button><a href="/peminjaman">Form Peminjaman</a></button></td>
+            <td><button><a href="/peminjaman/viewpeminjaman">View Peminjaman</a></button></td>
+        </tr>
+    </table>
+
+    <table class="table" border="1">
         <thead>
             <tr>
                 <th>Tgl Pengajuan</th>
@@ -22,7 +32,7 @@
                 <th>Ruang</th>
                 <th>Tgl Pakai</th>
                 <th>Status</th>
-                <th>Aksi</th>
+                <th colspan="4">Aksi</th>
             </tr>
         </thead>
         <tbody>
@@ -37,9 +47,14 @@
                         {{ ucfirst($pj->status) }}
                     </span>
                 </td>
+                {{-- <td>
+                    <a href="/peminjaman/edit/{{ $pj->id }}" class="btn btn-sm btn-primary">Edit</a>
+                </td> --}}
                 <td>
-                    <a href="{{ route('peminjaman.edit', $pj->id) }}" class="btn btn-sm btn-primary">Edit / Detail</a>
-                </td>
+                <div style="display: flex; gap: 5px;">
+                    <a href="/peminjaman/detail/{{ $pj->id }}" class="btn btn-sm btn-primary">Detail</a>
+                </div>
+            </td>
             </tr>
             @endforeach
         </tbody>

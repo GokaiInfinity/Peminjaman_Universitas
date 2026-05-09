@@ -74,7 +74,16 @@ class PeminjamanController extends Controller
     {
         // Menggunakan eager loading (with) untuk mencegah N+1 problem
         $peminjamans = Peminjaman::with(['peminjam', 'ruang'])->orderBy('tgl_pengajuan', 'desc')->get();
-        return view('peminjaman.index', compact('peminjamans'));
+        return view('/peminjaman/viewpeminjaman', compact('peminjamans'));
+    }
+
+    public function detail($id)
+    {
+    // Eager load juga relasi peminjam dan ruang agar tidak error saat dipanggil di blade
+    $peminjaman = Peminjaman::with(['peralatans', 'peminjam', 'ruang'])->findOrFail($id);
+
+    // Perbaikan: Gunakan 'peminjaman.detail' (tanpa slash di depan)
+    return view('peminjaman.detail', compact('peminjaman'));
     }
 
     public function edit($id)
@@ -84,7 +93,7 @@ class PeminjamanController extends Controller
         $peralatans = Peralatan::all();
         $peminjams = Peminjam::all();
 
-        return view('peminjaman.edit', compact('peminjaman', 'ruangs', 'peralatans', 'peminjams'));
+        return redirect('/peminjaman/editpeminjaman/' . $id)->with(compact('peminjaman', 'ruangs', 'peralatans', 'peminjams'));
     }
 
     public function update(Request $request, $id)
@@ -99,6 +108,86 @@ class PeminjamanController extends Controller
 
         $peminjaman->update($request->only(['status', 'waktu_kembali_aktual', 'keperluan']));
 
-        return redirect()->route('peminjaman.index')->with('success', 'Data peminjaman berhasil diperbarui!');
+        return redirect('/peminjaman/viewpeminjaman')->with('success', 'Data peminjaman berhasil diperbarui!');
     }
+
+    public function terima($id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $peminjaman = Peminjaman::with('peralatans')->findOrFail($id);
+
+            if ($peminjaman->status !== 'menunggu') {
+                throw new \Exception("Hanya peminjaman dengan status 'menunggu' yang dapat disetujui.");
+            }
+
+            // 1. Lakukan Decrement Stok untuk setiap peralatan yang dipinjam
+            foreach ($peminjaman->peralatans as $alat) {
+                $jumlahPinjam = $alat->pivot->jumlah_pinjam;
+
+                if ($alat->stok < $jumlahPinjam) {
+                    throw new \Exception("Stok alat {$alat->nama_alat} tidak cukup untuk disetujui.");
+                }
+
+                // Kurangi stok barang
+                $alat->decrement('stok', $jumlahPinjam);
+            }
+
+            // 2. Update Status Peminjaman
+            $peminjaman->update(['status' => 'disetujui']);
+
+            DB::commit();
+            return back()->with('success', 'Peminjaman disetujui dan stok barang telah dikurangi.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function tolak($id)
+    {
+        $peminjaman = Peminjaman::findOrFail($id);
+        $peminjaman->update(['status' => 'ditolak']);
+
+        return back()->with('success', 'Peminjaman telah ditolak.');
+    }
+
+    public function kembalikan(Request $request, $id)
+{
+    // Validasi input waktu
+    $request->validate([
+        'waktu_kembali_aktual' => 'required|date'
+    ]);
+
+    try {
+        DB::beginTransaction();
+
+        $peminjaman = Peminjaman::with('peralatans')->findOrFail($id);
+
+        if ($peminjaman->status !== 'disetujui') {
+            throw new \Exception("Hanya peminjaman dengan status 'disetujui' yang bisa dikembalikan.");
+        }
+
+        // 1. Lakukan Increment Stok (Kembalikan stok barang)
+        foreach ($peminjaman->peralatans as $alat) {
+            $jumlahPinjam = $alat->pivot->jumlah_pinjam;
+            $alat->increment('stok', $jumlahPinjam);
+        }
+
+        // 2. Update Status dan Waktu Kembali Aktual
+        $peminjaman->update([
+            'status' => 'selesai',
+            'waktu_kembali_aktual' => $request->waktu_kembali_aktual
+        ]);
+
+        DB::commit();
+        return back()->with('success', 'Peminjaman telah selesai, waktu dicatat, dan stok barang dikembalikan.');
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return back()->withErrors(['error' => $e->getMessage()]);
+    }
+}
 }

@@ -83,4 +83,5 @@ class RuangController extends Controller
 
         return redirect('/ruang');
     }
+
 }

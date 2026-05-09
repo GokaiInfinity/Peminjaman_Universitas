@@ -45,4 +45,16 @@ Route::get('/deleteruang/{ruang_id}', [RuangController::class, 'deleteRuang']);
 // Peminjaman
 Route::get('/peminjaman', [PeminjamanController::class, 'create']);
 
-Route::post('/peminjaman/store', [PeminjamanController::class, 'store'])->name('peminjaman.store');
+Route::post('/peminjaman/store', [PeminjamanController::class, 'store']);
+
+Route::get('/peminjaman/viewpeminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
+
+Route::get('/peminjaman/detail/{peminjaman_id}', [PeminjamanController::class, 'detail'])->name('peminjaman.detail');
+// Route::get('/peminjaman/editpeminjaman/{peminjaman_id}', [PeminjamanController::class, 'edit']);
+// Route::post('/peminjaman/update/{peminjaman_id}', [PeminjamanController::class, 'update']);
+
+// Peminjaman di terima
+Route::post('/peminjaman/terima/{peminjaman_id}', [PeminjamanController::class, 'terima'])->name('peminjaman.terima');
+
+// Peminjaman di tolak
+Route::post('/peminjaman/tolak/{peminjaman_id}', [PeminjamanController::class, 'tolak'])->name('peminjaman.tolak');
