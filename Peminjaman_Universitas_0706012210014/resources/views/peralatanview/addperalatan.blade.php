@@ -10,6 +10,9 @@
     <h1>Tambah Peralatan</h1>
     <form action="/insertperalatan" method="POST">
         @csrf
+        <label for="kode_peralatan">Kode Peralatan:</label>
+        <input type="text" id="kode_peralatan" name="kode_peralatan" required><br><br>
+
         <label for="nama_peralatan">Nama Peralatan:</label>
         <input type="text" id="nama_peralatan" name="nama_peralatan" required><br><br>
 

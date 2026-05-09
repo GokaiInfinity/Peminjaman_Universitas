@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PeminjamController;
 use App\Http\Controllers\PeralatanController;
+use App\Http\Controllers\RuangController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -28,3 +29,14 @@ Route::get('/editperalatan/{peralatan_id}', [PeralatanController::class, 'editpe
 Route::post('/updateperalatan/{peralatan_id}', [PeralatanController::class, 'updateperalatan']);
 
 Route::get('/deleteperalatan/{peralatan_id}', [PeralatanController::class, 'deletePeralatan']);
+
+// Ruang
+Route::get('/ruang', [RuangController::class, 'ruangview']);
+
+Route::get('/addruang', [RuangController::class, 'addRuangView']);
+Route::post('/insertruang', [RuangController::class, 'insertRuang']);
+
+Route::get('/editruang/{ruang_id}', [RuangController::class, 'editruangview']);
+Route::post('/updateruang/{ruang_id}', [RuangController::class, 'updateruang']);
+
+Route::get('/deleteruang/{ruang_id}', [RuangController::class, 'deleteRuang']);

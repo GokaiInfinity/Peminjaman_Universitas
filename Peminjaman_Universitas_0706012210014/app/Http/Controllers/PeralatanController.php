@@ -29,6 +29,7 @@ class PeralatanController extends Controller
     {
         // Membuat entri peralatan baru di database
         peralatan::create([
+            'kode_peralatan' => $request->kode_peralatan,
             'nama_peralatan' => $request->nama_peralatan,
             'stok' => $request->stok,
             'kategori' => $request->kategori,
@@ -63,6 +64,7 @@ class PeralatanController extends Controller
         $peralatan = peralatan::find($peralatan_id);
         // Memperbarui data peralatan dengan data baru dari request
         $peralatan->update([
+            'kode_peralatan' => $request->kode_peralatan,
             'nama_peralatan' => $request->nama_peralatan,
             'stok' => $request->stok,
             'kategori' => $request->kategori,

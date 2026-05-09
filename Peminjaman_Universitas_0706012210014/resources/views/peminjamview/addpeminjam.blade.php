@@ -20,7 +20,11 @@
         <input type="text" id="no_hp" name="no_hp" required><br><br>
 
         <label for="jenis_akun">Jenis Akun:</label>
-        <input type="text" id="jenis_akun" name="jenis_akun" required><br><br>
+        <select id="jenis_akun" name="jenis_akun" required>
+            <option value="Mahasiswa">Mahasiswa</option>
+            <option value="Dosen">Dosen</option>
+
+        </select><br><br>
 
         <button type="submit">Submit</button>
     </form>

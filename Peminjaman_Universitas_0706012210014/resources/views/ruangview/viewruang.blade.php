@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Daftar Ruang</title>
 </head>
 <body>
     <table>
@@ -14,27 +14,27 @@
             <td><button><a href="/peminjam">Lihat Peminjam</a></button></td>
         </tr>
     </table>
-    <a href="/addperalatan">Tambah Peralatan</a>
-    <h1>Daftar Peralatan</h1>
+    <a href="/addruang">Tambah Ruang</a>
+    <h1>Daftar Ruang</h1>
     <table border="1">
         <tr>
             <th>ID</th>
-            <th>Kode Peralatan</th>
-            <th>Nama Peralatan</th>
-            <th>Stok</th>
-            <th>Kategori</th>
+            <th>Kapasitas</th>
+            <th>Gedung</th>
+            <th>Lantai</th>
+            <th>Status Ketersediaan</th>
             <th>Aksi</th>
         </tr>
-        @foreach ($peralatan as $p)
+        @foreach ($ruang as $r)
         <tr>
-            <td>{{ $p->id }}</td>
-            <td>{{ $p->kode_peralatan }}</td>
-            <td>{{ $p->nama_peralatan }}</td>
-            <td>{{ $p->stok }}</td>
-            <td>{{ $p->kategori }}</td>
+            <td>{{ $r->id }}</td>
+            <td>{{ $r->kapasitas }}</td>
+            <td>{{ $r->gedung }}</td>
+            <td>{{ $r->lantai }}</td>
+            <td>{{ $r->status_ketersediaan }}</td>
             <td>
-                <button><a href="/editperalatan/{{ $p->id }}">Edit</a></button>
-                <button><a href="/deleteperalatan/{{ $p->id }}"> Hapus Peralatan</a></button>
+                <button><a href="/editruang/{{ $r->id }}">Edit</a></button>
+                <button><a href="/deleteruang/{{ $r->id }}"> Hapus Ruang</a></button>
             </td>
         </tr>
         @endforeach

@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('ruangs',function (Blueprint $table) {
             $table->id();
             $table->string('nama_ruang');
-            $table->string('lokasi');
+            $table->integer('kapasitas');
+            $table->integer('lantai');
+            $table->string('gedung');
+            $table->boolean('status_ketersediaan')->default(true);
             $table->timestamps();
         });
     }

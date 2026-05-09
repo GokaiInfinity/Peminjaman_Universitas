@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('peminjams',function (Blueprint $table) {
             $table->id();
             $table->string('nama');
-            $table->string('nim_nik');
+            $table->string('nim_nik')->unique();
             $table->string('no_hp');
-            $table->string('jenis_akun');
+            $table->enum('jenis_akun', ['mahasiswa', 'dosen']);
             $table->timestamps();
         });
     }

@@ -12,4 +12,9 @@ class peminjam extends Model
         'no_hp',
         'jenis_akun',
     ];
+
+    public function peminjamans() {
+        return $this->hasMany(Peminjaman::class);
+    }
+
 }

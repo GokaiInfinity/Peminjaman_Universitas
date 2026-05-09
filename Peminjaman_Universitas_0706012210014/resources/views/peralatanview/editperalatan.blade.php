@@ -10,6 +10,9 @@
     <h1>Edit Peralatan</h1>
     <form action="/updateperalatan/{{ $peralatan->id }}" method="POST">
         @csrf
+        <label for="kode_peralatan">Kode Peralatan:</label>
+        <input type="text" id="kode_peralatan" name="kode_peralatan" value="{{ $peralatan->kode_peralatan }}" required><br><br>
+
         <label for="nama_peralatan">Nama Peralatan:</label>
         <input type="text" id="nama_peralatan" name="nama_peralatan" value="{{ $peralatan->nama_peralatan }}" required><br><br>
 

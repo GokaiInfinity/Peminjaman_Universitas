@@ -20,7 +20,10 @@
         <input type="text" id="no_hp" name="no_hp" value="{{ $peminjam->no_hp }}" required><br><br>
 
         <label for="jenis_akun">Jenis Akun:</label>
-        <input type="text" id="jenis_akun" name="jenis_akun" value="{{ $peminjam->jenis_akun }}" required><br><br>
+        <select id="jenis_akun" name="jenis_akun" required>
+            <option value="Mahasiswa" {{ $peminjam->jenis_akun == 'Mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
+            <option value="Dosen" {{ $peminjam->jenis_akun == 'Dosen' ? 'selected' : '' }}>Dosen</option>
+        </select><br><br>
 
         <button type="submit">Update</button>
 </body>
