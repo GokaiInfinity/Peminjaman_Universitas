@@ -8,7 +8,7 @@ class peminjam extends Model
 {
     protected $fillable = [
         'nama',
-        'nim/nik',
+        'nim_nik',
         'no_hp',
         'jenis_akun',
     ];
