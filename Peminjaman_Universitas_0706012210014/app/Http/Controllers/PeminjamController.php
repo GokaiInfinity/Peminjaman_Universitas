@@ -39,13 +39,7 @@ class PeminjamController extends Controller
         return redirect('/peminjam');
     }
 
-    // Menampilkan detail peminjam tertentu berdasarkan id dari table peminjam.
-    public function detailPeminjam($peminjam_id)
-    {
-//
-    }
-
-    // // Menampilkan form untuk mengedit peminjam tertentu
+    // Menampilkan form untuk mengedit peminjam tertentu
     public function editPeminjamView($peminjam_id)
     {
         // Mengambil data peminjam berdasarkan id

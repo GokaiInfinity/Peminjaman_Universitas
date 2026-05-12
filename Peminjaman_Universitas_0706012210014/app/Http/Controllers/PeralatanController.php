@@ -39,13 +39,7 @@ class PeralatanController extends Controller
         return redirect('/peralatan');
     }
 
-    // Menampilkan detail peralatan tertentu berdasarkan id dari table peralatan.
-    public function detailPeralatan($peralatan_id)
-    {
-//
-    }
-
-    // // Menampilkan form untuk mengedit peralatan tertentu
+    // Menampilkan form untuk mengedit peralatan tertentu
     public function editPeralatanView($peralatan_id)
     {
         // Mengambil data peralatan berdasarkan id

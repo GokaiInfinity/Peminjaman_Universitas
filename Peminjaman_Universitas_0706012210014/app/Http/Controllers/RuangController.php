@@ -40,12 +40,6 @@ class RuangController extends Controller
         return redirect('/ruang');
     }
 
-    // Menampilkan detail ruang tertentu berdasarkan id dari table ruang.
-    public function detailRuang($ruang_id)
-    {
-//
-    }
-
     // Menampilkan form untuk mengedit ruang tertentu
     public function editRuangView($ruang_id)
     {

@@ -18,7 +18,8 @@ use Carbon\Carbon;
 
 class PeminjamanController extends Controller
 {
-    public function create()
+    // Method untuk menampilkan form peminjaman baru
+    public function showPeminjamanForm()
     {
         $ruangs = Ruang::where('status_ketersediaan', true)->get();
         $peralatans = Peralatan::where('stok', '>', 0)->get();
@@ -27,7 +28,7 @@ class PeminjamanController extends Controller
         return view('peminjaman.create', compact('ruangs', 'peralatans', 'peminjams'));
     }
 
-
+    // Method untuk menyimpan data peminjaman baru ke database
     public function store(StorePeminjamanRequest $request)
     {
         try {
@@ -52,7 +53,6 @@ class PeminjamanController extends Controller
 
                     // Cari alat dan cek stok
                     $alat = Peralatan::findOrFail($alatId);
-                    echo "Alat: {$alat->nama_peralatan}, Stok: {$alat->stok}, Jumlah Pinjam: {$jumlah}"; // Debug
 
                     if ($alat->stok < $jumlah) {
                         throw new \Exception("Stok alat {$alat->nama_peralatan} tidak mencukupi.");
@@ -74,6 +74,7 @@ class PeminjamanController extends Controller
             return back()->withErrors(['error' => $e->getMessage()])->withInput();
         }
     }
+    // Method untuk menampilkan daftar peminjaman
     public function index()
     {
         // Menggunakan eager loading (with) untuk mencegah N+1 problem
@@ -83,11 +84,11 @@ class PeminjamanController extends Controller
 
     public function detail($id)
     {
-    // Eager load juga relasi peminjam dan ruang agar tidak error saat dipanggil di blade
-    $peminjaman = Peminjaman::with(['peralatans', 'peminjam', 'ruang'])->findOrFail($id);
+        // Eager load juga relasi peminjam dan ruang agar tidak error saat dipanggil di blade
+        $peminjaman = Peminjaman::with(['peralatans', 'peminjam', 'ruang'])->findOrFail($id);
 
-    // Perbaikan: Gunakan 'peminjaman.detail' (tanpa slash di depan)
-    return view('peminjaman.detail', compact('peminjaman'));
+        // Perbaikan: Gunakan 'peminjaman.detail' (tanpa slash di depan)
+        return view('peminjaman.detail', compact('peminjaman'));
     }
 
     public function edit($id)
